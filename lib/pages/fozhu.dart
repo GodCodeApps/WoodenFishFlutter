@@ -12,12 +12,19 @@ class FoZhu extends StatefulWidget {
 }
 
 class _FoZhuState extends State<FoZhu> {
-  AudioPlayer? audioPlayer;
+  late final AudioPlayer audioPlayer;
 
   @override
   void initState() {
     super.initState();
     audioPlayer = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.pause();
+    audioPlayer.stop();
+    super.dispose();
   }
 
   @override
@@ -35,11 +42,12 @@ class _FoZhuState extends State<FoZhu> {
               image: AssetImage('assets/fz.png'),
               fit: BoxFit.cover,
             )),
+
         Positioned(
-            top: 0.0,
+            top: 120.0,
             left: 0,
             right: 0,
-            bottom: 0,
+            bottom: 100.0,
             child: Swiper(
                 itemBuilder: (BuildContext context, int index) {
                   return const Image(
@@ -55,7 +63,31 @@ class _FoZhuState extends State<FoZhu> {
                 autoplay: false,
                 itemCount: 3,
                 viewportFraction: 0.08,
-                scrollDirection: Axis.vertical))
+                scrollDirection: Axis.vertical)),
+        const Positioned(
+            right: 0,
+            left: 0,
+            top: 60.0,
+            child: Text(
+              "功德+300",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0),
+            )),
+        Positioned(
+            left: 20.0,
+            top: 60.0,
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: const Image(
+                image: AssetImage('assets/fanhui.png'),
+                width: 20.0,
+              ),
+            )),
       ],
     ));
   }

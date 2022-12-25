@@ -10,6 +10,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   late final AudioPlayer audioPlayer;
+  late final AudioPlayer musicPlayer;
   late final AnimationController gunziAnimalController;
   late final Animation<double> animation;
 
@@ -17,11 +18,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     audioPlayer = AudioPlayer();
+    musicPlayer = AudioPlayer();
+    musicPlayer.play("dabeizou.mp3", isLocal: true);
     gunziAnimalController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    animation = Tween<double>(begin: -0.1, end: 0.5).animate(gunziAnimalController);
+    animation =
+        Tween<double>(begin: -0.1, end: 0.5).animate(gunziAnimalController);
   }
 
   @override
@@ -60,7 +64,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       },
                       child: Stack(
                           alignment: AlignmentDirectional.center,
-                          children:  [
+                          children: [
                             const Image(
                                 image: AssetImage('assets/muyu.png'),
                                 width: 280.0,
@@ -68,12 +72,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                             Positioned(
                                 top: 0.0,
                                 right: -20.0,
-                                child:RotationTransition(
+                                child: RotationTransition(
                                   turns: animation,
                                   child: const Image(
-                                  image: AssetImage('assets/gunzi.png'),
-                                  width: 180.0,
-                                ),) )
+                                    image: AssetImage('assets/gunzi.png'),
+                                    width: 180.0,
+                                  ),
+                                ))
                           ]))),
               Positioned(
                   top: 140.0,
@@ -111,8 +116,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   ))
             ]));
   }
+
   @override
   void dispose() {
+    audioPlayer.stop();
     gunziAnimalController.dispose();
     super.dispose();
   }

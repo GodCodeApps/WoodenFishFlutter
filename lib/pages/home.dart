@@ -1,5 +1,11 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lifecycle_aware/lifecycle.dart';
+import 'package:flutter_lifecycle_aware/lifecycle_observer.dart';
+import 'package:flutter_lifecycle_aware/lifecycle_owner.dart';
+import 'package:flutter_lifecycle_aware/lifecycle_state.dart';
+import 'package:wooden_fish/model/constant.dart';
+import 'package:wooden_fish/model/storage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -7,19 +13,55 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
+class HomeViewModel extends LifecycleObserver {
+  ///需要释放的资源
+  ScrollController controller = ScrollController();
 
-class _HomeState extends State<Home> with TickerProviderStateMixin {
+  ///初始化数据
+  void initData() {
+  }
+
+  ///销毁/释放资源
+  void destroy() {
+    controller.dispose();
+  }
+
+  ///生命周期回调监听
+  @override
+  void onLifecycleChanged(LifecycleOwner owner, LifecycleState state) {
+    print("<<<<<<<<<<<<state" + state.name);
+    if (state == LifecycleState.onResume) {
+      initData();
+    } else if (state == LifecycleState.onDestroy) {
+      destroy();
+    }
+  }
+}
+class _HomeState extends State<Home> with TickerProviderStateMixin, Lifecycle {
   late final AudioPlayer audioPlayer;
   late final AudioPlayer musicPlayer;
   late final AnimationController gunziAnimalController;
   late final Animation<double> animation;
+  int count = 0;
+
+  getData() async {
+    int s = await Storage.getInt(Constant.countKey);
+    setState(() {
+      count = s;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    HomeViewModel viewModel= HomeViewModel();
+    getLifecycle().addObserver(viewModel);
+    viewModel.initData();
+    Storage.getInt(Constant.countKey).then((value) => {count = value});
+    print(">>>>>>>>>>>initState");
     audioPlayer = AudioPlayer();
     musicPlayer = AudioPlayer();
-    musicPlayer.play("dabeizou.mp3", isLocal: true);
+    // musicPlayer.play("dabeizou.mp3", isLocal: true);
     gunziAnimalController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -37,13 +79,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             clipBehavior: Clip.none,
             fit: StackFit.expand,
             children: [
-              const Positioned(
+              Positioned(
                   left: 0,
                   top: 90.0,
                   right: 0,
-                  child: Text("功德+600",
+                  child: Text("功德+$count",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold))),
@@ -60,6 +102,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         setState(() {
                           audioPlayer.play(
                               "https://unwatermarker.cn/woodenFish/audio/muyu.mp3");
+                          count += 1;
+                          Storage.setInt(Constant.countKey, count);
                         });
                       },
                       child: Stack(
@@ -124,3 +168,5 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     super.dispose();
   }
 }
+
+

@@ -33,6 +33,8 @@ dependencies:
     sdk: flutter
   audioplayer: 0.8.1
   flutter_swiper: ^1.1.6
+  shared_preferences: ^2.0.15
+  flutter_lifecycle_aware: ^0.0.3
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2

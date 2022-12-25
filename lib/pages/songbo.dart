@@ -1,5 +1,8 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:wooden_fish/model/constant.dart';
+
+import '../model/storage.dart';
 
 class SongBo extends StatefulWidget {
   const SongBo({Key? key}) : super(key: key);
@@ -10,11 +13,20 @@ class SongBo extends StatefulWidget {
 
 class _SongBoState extends State<SongBo> {
   late final AudioPlayer audioPlayer;
+  int count = 0;
 
   @override
   void initState() {
-    audioPlayer = AudioPlayer();
     super.initState();
+    audioPlayer = AudioPlayer();
+    getData();
+  }
+
+  getData() async {
+    int s = await Storage.getInt(Constant.countKey);
+    setState(() {
+      count = s;
+    });
   }
 
   @override
@@ -40,14 +52,14 @@ class _SongBoState extends State<SongBo> {
                   image: AssetImage('assets/back.png'),
                   fit: BoxFit.fill,
                 )),
-            const Positioned(
+            Positioned(
                 right: 0,
                 left: 0,
                 top: 60.0,
                 child: Text(
-                  "功德+300",
+                  "功德+$count",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0),
@@ -69,6 +81,10 @@ class _SongBoState extends State<SongBo> {
                 bottom: 210.0,
                 child: InkWell(
                     onTap: () {
+                      setState(() {
+                        count += 1;
+                        Storage.setInt(Constant.countKey, count);
+                      });
                       audioPlayer.play(
                           "https://unwatermarker.cn/woodenFish/audio/songbo.mp3");
                     },
@@ -82,6 +98,10 @@ class _SongBoState extends State<SongBo> {
                 right: 0,
                 child: InkWell(
                   onTap: () {
+                    setState(() {
+                      count += 1;
+                      Storage.setInt(Constant.countKey, count);
+                    });
                     audioPlayer.play(
                         "https://unwatermarker.cn/woodenFish/audio/songbo.mp3");
                   },

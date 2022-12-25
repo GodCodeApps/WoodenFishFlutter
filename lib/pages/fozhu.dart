@@ -3,6 +3,8 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:wooden_fish/model/storage.dart';
+import 'package:wooden_fish/model/constant.dart';
 
 class FoZhu extends StatefulWidget {
   const FoZhu({Key? key}) : super(key: key);
@@ -13,11 +15,20 @@ class FoZhu extends StatefulWidget {
 
 class _FoZhuState extends State<FoZhu> {
   late final AudioPlayer audioPlayer;
+  int count = 0;
 
   @override
   void initState() {
     super.initState();
     audioPlayer = AudioPlayer();
+    getData();
+  }
+
+  getData() async {
+    int s = await Storage.getInt(Constant.countKey);
+    setState(() {
+      count = s;
+    });
   }
 
   @override
@@ -42,7 +53,6 @@ class _FoZhuState extends State<FoZhu> {
               image: AssetImage('assets/fz.png'),
               fit: BoxFit.cover,
             )),
-
         Positioned(
             top: 120.0,
             left: 0,
@@ -57,6 +67,10 @@ class _FoZhuState extends State<FoZhu> {
                   );
                 },
                 onIndexChanged: (res) {
+                  setState(() {
+                    count += 1;
+                    Storage.setInt(Constant.countKey, count);
+                  });
                   audioPlayer?.play(
                       "https://unwatermarker.cn/woodenFish/audio/sound.mp3");
                 },
@@ -64,14 +78,14 @@ class _FoZhuState extends State<FoZhu> {
                 itemCount: 3,
                 viewportFraction: 0.08,
                 scrollDirection: Axis.vertical)),
-        const Positioned(
+        Positioned(
             right: 0,
             left: 0,
             top: 60.0,
             child: Text(
-              "功德+300",
+              "功德+$count",
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0),

@@ -7,6 +7,7 @@ import 'package:wooden_fish/pages/songbo.dart';
 
 void main() {
   runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorObservers: [LifecycleRouteObserver.routeObserver],
       initialRoute: '/home',
       routes: {

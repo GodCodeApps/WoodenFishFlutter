@@ -32,6 +32,28 @@ class Constant {
     ]),
     ColorFilter.matrix(
         <double>[0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0]),
+    ColorFilter.matrix(<double>[
+      0.5,
+      0.4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.3,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]),
     ColorFilter.mode(Colors.deepPurpleAccent, BlendMode.modulate),
     ColorFilter.mode(Colors.green, BlendMode.modulate),
     ColorFilter.mode(Colors.tealAccent, BlendMode.modulate),
@@ -44,6 +66,5 @@ class Constant {
     ColorFilter.mode(Colors.white70, BlendMode.modulate),
     ColorFilter.mode(Colors.lightGreenAccent, BlendMode.modulate),
     ColorFilter.mode(Colors.indigo, BlendMode.modulate),
-
   ];
 }

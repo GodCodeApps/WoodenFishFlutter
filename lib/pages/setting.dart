@@ -10,8 +10,19 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  bool switchValue = true;
+  bool switchValue = false;
 
+  getData() async {
+    bool s = await Storage.getBool(Constant.musicKey);
+    setState(() {
+      switchValue = s;
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

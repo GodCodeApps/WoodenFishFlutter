@@ -14,63 +14,42 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class HomeViewModel extends LifecycleObserver {
-  ///需要释放的资源
-  ScrollController controller = ScrollController();
-
-  ///初始化数据
-  void initData() {}
-
-  ///销毁/释放资源
-  void destroy() {
-    controller.dispose();
-  }
-
-  ///生命周期回调监听
-  @override
-  void onLifecycleChanged(LifecycleOwner owner, LifecycleState state) {
-    print("<<<<<<<<<<<<state" + state.name);
-    if (state == LifecycleState.onResume) {
-      initData();
-    } else if (state == LifecycleState.onDestroy) {
-      destroy();
-    }
-  }
-}
-
-class _HomeState extends State<Home> with TickerProviderStateMixin, Lifecycle {
+class _HomeState extends State<Home>
+    with TickerProviderStateMixin, Lifecycle, LifecycleObserver {
   late final AudioPlayer audioPlayer;
   late final AudioPlayer musicPlayer;
   late final AnimationController gunziAnimalController;
   late final Animation<double> animation;
   int count = 0;
-  late ColorFilter colorFilter;
+  late ColorFilter colorFilter = Constant.dataList.elementAt(0);
 
   getData() async {
+    int fish = await Storage.getInt(Constant.fishKey);
+    ColorFilter color = Constant.dataList.elementAt(fish);
+    setState(() {
+      colorFilter = color;
+    });
     int s = await Storage.getInt(Constant.countKey);
     setState(() {
       count = s;
     });
     bool music = await Storage.getBool(Constant.musicKey);
     if (music) {
-      musicPlayer = AudioPlayer();
+      musicPlayer.stop();
       musicPlayer
           .play("https://unwatermarker.cn/woodenFish/audio/dabeizou.mp3");
+    } else {
+      musicPlayer.stop();
     }
-    int fish = await Storage.getInt(Constant.fishKey);
-    colorFilter = Constant.dataList.elementAt(fish);
   }
 
   @override
   void initState() {
     super.initState();
-    HomeViewModel viewModel = HomeViewModel();
-    getLifecycle().addObserver(viewModel);
-    viewModel.initData();
-    Storage.getInt(Constant.countKey).then((value) => {count = value});
-    getData();
-    print(">>>>>>>>>>>initState");
+    getLifecycle().addObserver(this);
+    // Storage.getInt(Constant.countKey).then((value) => {count = value});
     audioPlayer = AudioPlayer();
+    musicPlayer = AudioPlayer();
     gunziAnimalController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -116,7 +95,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin, Lifecycle {
                         });
                       },
                       child: Stack(
-                          alignment: AlignmentDirectional.center,
+                          alignment: AlignmentDirectional.bottomCenter,
                           children: [
                             ColorFiltered(
                               colorFilter: colorFilter,
@@ -181,5 +160,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin, Lifecycle {
     audioPlayer.stop();
     gunziAnimalController.dispose();
     super.dispose();
+  }
+
+  @override
+  void onLifecycleChanged(LifecycleOwner owner, LifecycleState state) {
+    if (state == LifecycleState.onResume) {
+      getData();
+    }
   }
 }

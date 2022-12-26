@@ -1,8 +1,7 @@
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
+    localPropertiesFile.withReader('UTF-8') { reader -> localProperties.load(reader)
     }
 }
 
@@ -24,6 +23,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
 
 android {
     compileSdkVersion flutter.compileSdkVersion
@@ -52,12 +52,19 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-
+    signingConfigs {
+        release {
+            keyAlias localProperties['keyAlias']
+            keyPassword localProperties['keyPassword']
+            storeFile file(localProperties['storeFile'])
+            storePassword localProperties['storePassword']
+        }
+    }
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }

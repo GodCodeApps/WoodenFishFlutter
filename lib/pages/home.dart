@@ -39,6 +39,7 @@ class _HomeState extends State<Home>
       musicPlayer
           .play("https://unwatermarker.cn/woodenFish/audio/dabeizou.mp3");
     } else {
+      musicPlayer.pause();
       musicPlayer.stop();
     }
   }

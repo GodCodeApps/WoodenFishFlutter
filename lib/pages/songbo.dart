@@ -85,6 +85,7 @@ class _SongBoState extends State<SongBo> {
                         count += 1;
                         Storage.setInt(Constant.countKey, count);
                       });
+                      audioPlayer.stop();
                       audioPlayer.play(
                           "https://unwatermarker.cn/woodenFish/audio/songbo.mp3");
                     },

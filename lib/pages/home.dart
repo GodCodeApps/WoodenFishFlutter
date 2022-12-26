@@ -13,13 +13,13 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
+
 class HomeViewModel extends LifecycleObserver {
   ///需要释放的资源
   ScrollController controller = ScrollController();
 
   ///初始化数据
-  void initData() {
-  }
+  void initData() {}
 
   ///销毁/释放资源
   void destroy() {
@@ -37,31 +37,40 @@ class HomeViewModel extends LifecycleObserver {
     }
   }
 }
+
 class _HomeState extends State<Home> with TickerProviderStateMixin, Lifecycle {
   late final AudioPlayer audioPlayer;
   late final AudioPlayer musicPlayer;
   late final AnimationController gunziAnimalController;
   late final Animation<double> animation;
   int count = 0;
+  late ColorFilter colorFilter;
 
   getData() async {
     int s = await Storage.getInt(Constant.countKey);
     setState(() {
       count = s;
     });
+    bool music = await Storage.getBool(Constant.musicKey);
+    if (music) {
+      musicPlayer = AudioPlayer();
+      musicPlayer
+          .play("https://unwatermarker.cn/woodenFish/audio/dabeizou.mp3");
+    }
+    int fish = await Storage.getInt(Constant.fishKey);
+    colorFilter = Constant.dataList.elementAt(fish);
   }
 
   @override
   void initState() {
     super.initState();
-    HomeViewModel viewModel= HomeViewModel();
+    HomeViewModel viewModel = HomeViewModel();
     getLifecycle().addObserver(viewModel);
     viewModel.initData();
     Storage.getInt(Constant.countKey).then((value) => {count = value});
+    getData();
     print(">>>>>>>>>>>initState");
     audioPlayer = AudioPlayer();
-    musicPlayer = AudioPlayer();
-    // musicPlayer.play("dabeizou.mp3", isLocal: true);
     gunziAnimalController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -109,18 +118,24 @@ class _HomeState extends State<Home> with TickerProviderStateMixin, Lifecycle {
                       child: Stack(
                           alignment: AlignmentDirectional.center,
                           children: [
-                            const Image(
-                                image: AssetImage('assets/muyu.png'),
-                                width: 280.0,
-                                height: 380.0),
+                            ColorFiltered(
+                              colorFilter: colorFilter,
+                              child: const Image(
+                                  image: AssetImage("assets/muyu.png"),
+                                  width: 280.0,
+                                  height: 380.0),
+                            ),
                             Positioned(
                                 top: 0.0,
                                 right: -20.0,
-                                child: RotationTransition(
-                                  turns: animation,
-                                  child: const Image(
-                                    image: AssetImage('assets/gunzi.png'),
-                                    width: 180.0,
+                                child: ColorFiltered(
+                                  colorFilter: colorFilter,
+                                  child: RotationTransition(
+                                    turns: animation,
+                                    child: const Image(
+                                      image: AssetImage('assets/gunzi.png'),
+                                      width: 180.0,
+                                    ),
                                   ),
                                 ))
                           ]))),
@@ -168,5 +183,3 @@ class _HomeState extends State<Home> with TickerProviderStateMixin, Lifecycle {
     super.dispose();
   }
 }
-
-

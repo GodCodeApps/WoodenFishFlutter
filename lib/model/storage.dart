@@ -12,4 +12,13 @@ class Storage {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getInt(key) ?? 0;
   }
+  static Future<void> setBool(key, value) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool(key, value);
+  }
+
+  static Future<bool> getBool(key) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    return sp.getBool(key) ?? false;
+  }
 }

@@ -1,16 +1,5 @@
 # wooden_fish
 
-A new Flutter project.
+![1703818813447](https://github.com/PengyanMingJack/WoodenFishFlutter/assets/15820159/d400288d-6cf7-43ea-aca4-bbeba5170d2e)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 官网体验地址（支持安卓 ios 微信小程 抖音小程版本） https://fish.firefix.cn/
